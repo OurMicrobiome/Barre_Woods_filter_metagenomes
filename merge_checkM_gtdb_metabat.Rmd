@@ -1,0 +1,233 @@
+---
+title: "filter_checkM_gtdb"
+author: "Jeffrey Blanchard"
+date: "12/11/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+library(DT)
+```
+
+```{r}
+C1_metabat_checkM <- read_tsv("C1/C1_metabat/CheckM_summary_table.tsv")
+C1_metabat_gtdb <- read_csv("C1/C1_metabat/gtdb.csv")
+
+# out taxa categories in separate columns
+# change bin names in gtdb to remove .fa
+C1_metabat_gtdb <- C1_metabat_gtdb %>% 
+  mutate_at("User Genome", str_replace, ".fa", "") %>% 
+  rename(`Bin Name` = `User Genome`) %>% 
+  mutate_at("Classification", str_replace, "d__", "") %>% 
+  mutate_at("Classification", str_replace, "p__", "") %>% 
+  mutate_at("Classification", str_replace, "c__", "") %>% 
+  mutate_at("Classification", str_replace, "o__", "") %>% 
+  mutate_at("Classification", str_replace, "f__", "") %>% 
+  mutate_at("Classification", str_replace, "g__", "") %>% 
+  mutate_at("Classification", str_replace, "s__", "") %>% 
+  separate(Classification, c("Domain", "Phylum", "Class", "Order", "Family", "Genus", "Species"), ";")
+
+# merge columns and add column name 
+C1_metabat_merge <- left_join(C1_metabat_checkM,
+    C1_metabat_gtdb, by = c("Bin Name")) %>% 
+    mutate(Metagenome = "C1") %>% 
+    relocate(Metagenome)
+```
+
+
+```{r}
+C2_metabat_checkM <- read_tsv("C2/C2_metabat/CheckM_summary_table.tsv")
+C2_metabat_gtdb <- read_csv("C2/C2_metabat/gtdb.csv")
+
+# out taxa categories in separate columns
+# change bin names in gtdb to remove .fa
+C2_metabat_gtdb <- C2_metabat_gtdb %>% 
+  mutate_at("User Genome", str_replace, ".fa", "") %>% 
+  rename(`Bin Name` = `User Genome`) %>% 
+  mutate_at("Classification", str_replace, "d__", "") %>% 
+  mutate_at("Classification", str_replace, "p__", "") %>% 
+  mutate_at("Classification", str_replace, "c__", "") %>% 
+  mutate_at("Classification", str_replace, "o__", "") %>% 
+  mutate_at("Classification", str_replace, "f__", "") %>% 
+  mutate_at("Classification", str_replace, "g__", "") %>% 
+  mutate_at("Classification", str_replace, "s__", "") %>% 
+  separate(Classification, c("Domain", "Phylum", "Class", "Order", "Family", "Genus", "Species"), ";")
+
+# merge columns and add column name 
+C2_metabat_merge <- left_join(C2_metabat_checkM,
+    C2_metabat_gtdb, by = c("Bin Name")) %>% 
+    mutate(Metagenome = "C2") %>% 
+    relocate(Metagenome)
+```
+
+```{r}
+B1_metabat_checkM <- read_tsv("B1/B1_metabat/CheckM_summary_table.tsv")
+B1_metabat_gtdb <- read_csv("B1/B1_metabat/gtdb.csv")
+
+# out taxa categories in separate columns
+# change bin names in gtdb to remove .fa
+B1_metabat_gtdb <- B1_metabat_gtdb %>% 
+  mutate_at("User Genome", str_replace, ".fa", "") %>% 
+  rename(`Bin Name` = `User Genome`) %>% 
+  mutate_at("Classification", str_replace, "d__", "") %>% 
+  mutate_at("Classification", str_replace, "p__", "") %>% 
+  mutate_at("Classification", str_replace, "c__", "") %>% 
+  mutate_at("Classification", str_replace, "o__", "") %>% 
+  mutate_at("Classification", str_replace, "f__", "") %>% 
+  mutate_at("Classification", str_replace, "g__", "") %>% 
+  mutate_at("Classification", str_replace, "s__", "") %>% 
+  separate(Classification, c("Domain", "Phylum", "Class", "Order", "Family", "Genus", "Species"), ";") %>% 
+  mutate(`RED Value` = as.character(`RED Value`))
+
+# merge columns and add column name 
+B1_metabat_merge <- left_join(B1_metabat_checkM,
+    B1_metabat_gtdb, by = c("Bin Name")) %>% 
+    mutate(Metagenome = "B1") %>% 
+    relocate(Metagenome)
+```
+
+```{r}
+B2_metabat_checkM <- read_tsv("B2/B2_metabat/CheckM_summary_table.tsv")
+B2_metabat_gtdb <- read_csv("B2/B2_metabat/gtdb.csv")
+
+# out taxa categories in separate columns
+# change bin names in gtdb to remove .fa
+B2_metabat_gtdb <- B2_metabat_gtdb %>% 
+  mutate_at("User Genome", str_replace, ".fa", "") %>% 
+  rename(`Bin Name` = `User Genome`) %>% 
+  mutate_at("Classification", str_replace, "d__", "") %>% 
+  mutate_at("Classification", str_replace, "p__", "") %>% 
+  mutate_at("Classification", str_replace, "c__", "") %>% 
+  mutate_at("Classification", str_replace, "o__", "") %>% 
+  mutate_at("Classification", str_replace, "f__", "") %>% 
+  mutate_at("Classification", str_replace, "g__", "") %>% 
+  mutate_at("Classification", str_replace, "s__", "") %>% 
+  separate(Classification, c("Domain", "Phylum", "Class", "Order", "Family", "Genus", "Species"), ";")
+
+# merge columns and add column name 
+B2_metabat_merge <- left_join(B2_metabat_checkM,
+    B2_metabat_gtdb, by = c("Bin Name")) %>% 
+    mutate(Metagenome = "B2") %>% 
+    relocate(Metagenome)
+```
+
+```{r}
+A1_metabat_checkM <- read_tsv("A1/A1_metabat/CheckM_summary_table.tsv")
+A1_metabat_gtdb <- read_csv("A1/A1_metabat/gtdb.csv")
+
+# out taxa categories in separate columns
+# change bin names in gtdb to remove .fa
+A1_metabat_gtdb <- A1_metabat_gtdb %>% 
+  mutate_at("User Genome", str_replace, ".fa", "") %>% 
+  rename(`Bin Name` = `User Genome`) %>% 
+  mutate_at("Classification", str_replace, "d__", "") %>% 
+  mutate_at("Classification", str_replace, "p__", "") %>% 
+  mutate_at("Classification", str_replace, "c__", "") %>% 
+  mutate_at("Classification", str_replace, "o__", "") %>% 
+  mutate_at("Classification", str_replace, "f__", "") %>% 
+  mutate_at("Classification", str_replace, "g__", "") %>% 
+  mutate_at("Classification", str_replace, "s__", "") %>% 
+  separate(Classification, c("Domain", "Phylum", "Class", "Order", "Family", "Genus", "Species"), ";") %>% 
+  mutate(`RED Value` = as.character(`RED Value`))
+
+# merge columns and add column name 
+A1_metabat_merge <- left_join(A1_metabat_checkM,
+    A1_metabat_gtdb, by = c("Bin Name")) %>% 
+    mutate(Metagenome = "A1") %>% 
+    relocate(Metagenome)
+```
+
+
+```{r}
+A3_metabat_checkM <- read_tsv("A3/A3_metabat/CheckM_summary_table.tsv")
+A3_metabat_gtdb <- read_csv("A3/A3_metabat/gtdb.csv")
+
+# out taxa categories in separate columns
+# change bin names in gtdb to remove .fa
+A3_metabat_gtdb <- A3_metabat_gtdb %>% 
+  mutate_at("User Genome", str_replace, ".fa", "") %>% 
+  rename(`Bin Name` = `User Genome`) %>% 
+  mutate_at("Classification", str_replace, "d__", "") %>% 
+  mutate_at("Classification", str_replace, "p__", "") %>% 
+  mutate_at("Classification", str_replace, "c__", "") %>% 
+  mutate_at("Classification", str_replace, "o__", "") %>% 
+  mutate_at("Classification", str_replace, "f__", "") %>% 
+  mutate_at("Classification", str_replace, "g__", "") %>% 
+  mutate_at("Classification", str_replace, "s__", "") %>% 
+  separate(Classification, c("Domain", "Phylum", "Class", "Order", "Family", "Genus", "Species"), ";")
+
+# merge columns and add column name 
+A3_metabat_merge <- left_join(A3_metabat_checkM,
+    A3_metabat_gtdb, by = c("Bin Name")) %>% 
+    mutate(Metagenome = "A3") %>% 
+    relocate(Metagenome)
+```
+
+```{r}
+# merge TIBBLES
+all_metabat <- bind_rows(C1_metabat_merge, C2_metabat_merge, B1_metabat_merge, B2_metabat_merge, A1_metabat_merge, A3_metabat_merge)
+```
+
+
+```{r}
+
+write_tsv(all_metabat, "all_metabat.tsv")
+```
+
+
+```{r}
+all_metabat_B1 <- all_metabat %>%
+  filter(Metagenome == "B1") 
+write_tsv(all_metabat_B1, "all_metabat_B1.tsv")
+```
+
+```{r}
+all_metabat_C1 <- all_metabat %>%
+  filter(Metagenome == "C1") 
+write_tsv(all_metabat_C1, "all_metabat_C1.tsv")
+```
+
+```{r}
+write_tsv(all_metabat, "all_metabat.tsv")
+```
+
+
+```{r}
+all_metabat_50_10 <- all_metabat %>%
+  filter(Completeness > 50) %>% 
+  filter(Contamination < 10) 
+```
+
+```{r}
+write_tsv(all_metabat_50_10, "all_metabat_50_10.tsv")
+```
+
+
+
+```{r}
+datatable(all_metabat_50_10 %>% 
+  group_by(Phylum) %>% 
+  summarise(n = n()) %>%
+  mutate(freq = n / sum(n)) 
+)
+```
+
+
+```{r}
+all_metabat_90_10 <- all_metabat %>%
+  filter(Completeness > 90) %>% 
+  filter(Contamination < 10) 
+```
+
+```{r}
+datatable(all_metabat_90_10 %>% 
+  group_by(Phylum) %>% 
+  summarise(n = n()) %>%
+  mutate(freq = n / sum(n)) 
+)
+```

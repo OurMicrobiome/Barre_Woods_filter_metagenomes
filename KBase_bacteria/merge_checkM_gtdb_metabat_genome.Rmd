@@ -321,6 +321,7 @@ ggplot(aes(x = BinContigLenSum)) +
   geom_histogram(colour = "black", fill = "maroon", binwidth=500000) +
   ggtitle("Genome size of MAGs for each Class") +
   ylab("Genome size") + 
+  xlab("MAG size (bp)") +
   theme(text = element_text(size = 20, color="black"))
 ```
 
@@ -330,7 +331,7 @@ all_metabat_bin_size_50_10 %>%
 ggplot(aes(x = reorder(Class, BinContigLenSum, na.rm = TRUE), y = BinContigLenSum, color = Domain)) + 
   geom_point() +
   ggtitle("Genome size of MAGs for each Class") +
-  ylab("Number of MAGs") + 
+  ylab("MAG size (bp)") + 
   xlab("Class") +
   coord_flip()
 ```
@@ -342,7 +343,7 @@ all_metabat_bin_size_50_10 %>%
 ggplot(aes(x = reorder(Class, BinContigLenSum, na.rm = TRUE), y = BinContigLenSum, color = Domain)) + 
   geom_boxplot() +
   ggtitle("Number of MAGs for each Class") +
-  ylab("Number of MAGs") + 
+  ylab("MAG size (bp)") + 
   xlab("Class") +
   coord_flip()
 ```
@@ -354,7 +355,7 @@ all_metabat_bin_size_50_10 %>%
 ggplot(aes(x = reorder(Class, BinContigLenSum, na.rm = TRUE), y = BinContigLenSum, color = Metagenome)) + 
   geom_point() +
   ggtitle("Genome size of MAGs for each Class") +
-  ylab("Number of MAGs") + 
+  ylab("MAG size (bp)") + 
   xlab("Class") +
   coord_flip()
 ```

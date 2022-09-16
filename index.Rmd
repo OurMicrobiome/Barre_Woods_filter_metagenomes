@@ -8,5 +8,5 @@ This is a rendering of hmtl files from the repository (https://github.com/OurMic
 
 ## Pages
 
-* Page 1 : [Initial Analyses](merge_checkM_gtdb_metabat_genome.hmtl)
+* Page 1 : [Initial Analyses](KBase_bacteria/merge_checkM_gtdb_metabat_genome.html)
 

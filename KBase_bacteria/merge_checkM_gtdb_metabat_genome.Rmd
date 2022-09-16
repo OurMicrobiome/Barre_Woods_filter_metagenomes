@@ -1,7 +1,7 @@
 ---
 title: "Analysis of Metabat MAGs from the Barre Woods Filter Metagenomes"
 author: "Jeffrey Blanchard"
-date: "12/11/2021"
+date: "9/16/2022"
 output:
   html_document:
     toc: true
@@ -248,24 +248,16 @@ write_tsv(all_metabat_bin_size, "all_metabat_bin_size.tsv")
 
 ## Data analysis
 
-### Filter low quality MAGs
+
+### Table of Medium and High Quality MAGs
 
 ```{r}
-all_metabat_bin_size_90_10 <- all_metabat_bin_size %>%
-  filter(Completeness > 89.5) %>% 
-  filter(Contamination < 10.4) 
-write_tsv(all_metabat_bin_size_90_10, "all_metabat_bin_size_90_10")
-```
-```{r}
+
 all_metabat_bin_size_50_10 <- all_metabat_bin_size %>%
   filter(Completeness > 49.5) %>% 
   filter(Contamination < 10.4) 
-write_tsv(all_metabat_bin_size_50_10, "all_metabat_bin_size_50_10")
-```
+#write_tsv(all_metabat_bin_size_50_10, "all_metabat_bin_size_50_10")
 
-#### Table of Medium and High Quality MAGs
-
-```{r}
 datatable(all_metabat_bin_size_50_10 %>% 
   group_by(Phylum) %>% 
   summarise(n = n()) %>%
@@ -274,9 +266,14 @@ datatable(all_metabat_bin_size_50_10 %>%
 )
 ```
 
-#### Table of High Quality MAGs
+### Table of High Quality MAGs
 
 ```{r}
+all_metabat_bin_size_90_10 <- all_metabat_bin_size %>%
+  filter(Completeness > 89.5) %>% 
+  filter(Contamination < 10.4) 
+# write_tsv(all_metabat_bin_size_90_10, "all_metabat_bin_size_90_10")
+
 datatable(all_metabat_bin_size_90_10 %>% 
   group_by(Phylum) %>% 
   summarise(n = n()) %>%
@@ -285,11 +282,12 @@ datatable(all_metabat_bin_size_90_10 %>%
 )
 ```
 
+## Graphs of MQ and HQ MAGs
 
-#### Phyla
 
+### Phyla pie chart
 ```{r, echo=FALSE}
-all_metabat_50_10 %>% 
+all_metabat_bin_size_50_10 %>% 
   count(Phylum, sort = TRUE) %>% 
   ggplot(aes(x = "", y = n, fill = reorder(Phylum, -n))) + 
     geom_bar(width = 1, stat = "identity") +
@@ -300,43 +298,12 @@ all_metabat_50_10 %>%
        y=NULL, 
        title="Phyla in filter MAGs")
 ```
-#### Class
+
+
+### Phyla bar chart
 
 ```{r, echo=FALSE}
-all_metabat_50_10 %>% 
-  count(Class, sort = TRUE) %>% 
-  ggplot(aes(x = "", y = n, fill = reorder(Class, -n))) + 
-    geom_bar(width = 1, stat = "identity") +
-    coord_polar(theta = "y", start=0) +
- #   geom_text(aes(label = paste0(n)), position = position_stack(vjust=0.5)) +
-    labs(fill="Class", 
-       x=NULL, 
-       y=NULL, 
-       title="Class in filter MAGs")
-```
-
-
-#### Order
-
-```{r, echo=FALSE}
-all_metabat_50_10 %>% 
-  count(Order, sort = TRUE) %>% 
-  ggplot(aes(x = "", y = n, fill = reorder(Order, -n))) + 
-    geom_bar(width = 1, stat = "identity") +
-    coord_polar(theta = "y", start=0) +
- #   geom_text(aes(label = paste0(n)), position = position_stack(vjust=0.5)) +
-    labs(fill="Order", 
-       x=NULL, 
-       y=NULL, 
-       title="Order in filter MAGs")
-```
-
-
-#### Phyla bar chart
-
-
-```{r, echo=FALSE}
-all_metabat_50_10 %>% 
+all_metabat_bin_size_50_10 %>% 
   count(Phylum, sort = TRUE) %>% 
   ggplot(aes(x=reorder(Phylum, n), y = n)) +
   geom_col(colour = "maroon", fill = "maroon") +
@@ -346,175 +313,49 @@ all_metabat_50_10 %>%
   xlab("Class")
 ```
 
-
-#### Class bar chart
-
-
-```{r, echo=FALSE}
-all_metabat_50_10 %>% 
-  count(Class, sort = TRUE) %>% 
-  ggplot(aes(x=reorder(Class, n), y = n)) +
-  geom_col(colour = "maroon", fill = "maroon") +
-  coord_flip()+
-  ggtitle("Number of MAGs for each Class") +
-  ylab("Number of MAGs") + 
-  theme(text = element_text(size = 20, color="black")) +
-  xlab("Class")
-```
-
-
+### Histogram of MAG size distribution
 
 ```{r}
-all_metabat_virsorter_50_10 <-all_metabat_virsorter %>%
-  filter(Completeness > 50) %>% 
-  filter(Contamination < 10) 
+all_metabat_bin_size_50_10 %>% 
+ggplot(aes(x = BinContigLenSum)) + 
+  geom_histogram(colour = "black", fill = "maroon", binwidth=500000) +
+  ggtitle("Genome size of MAGs for each Class") +
+  ylab("Genome size") + 
+  theme(text = element_text(size = 20, color="black"))
 ```
 
-
-
+### xyplot of MAG Size for each class
 ```{r}
-all_metabat_virsorter_50_10 %>% 
-ggplot(aes(x = Class, y = BinContigLenSum, color = Domain)) + 
+all_metabat_bin_size_50_10 %>% 
+ggplot(aes(x = reorder(Class, BinContigLenSum, na.rm = TRUE), y = BinContigLenSum, color = Domain)) + 
   geom_point() +
-  ggtitle("Number of MAGs for each Class") +
+  ggtitle("Genome size of MAGs for each Class") +
   ylab("Number of MAGs") + 
   xlab("Class") +
   coord_flip()
-#  theme(axis.text.x = element_text(angle = 90)) 
 ```
 
+### Boxplot of MAG size for each class
+
 ```{r}
-all_metabat_virsorter_50_10 %>% 
+all_metabat_bin_size_50_10 %>% 
 ggplot(aes(x = reorder(Class, BinContigLenSum, na.rm = TRUE), y = BinContigLenSum, color = Domain)) + 
   geom_boxplot() +
   ggtitle("Number of MAGs for each Class") +
   ylab("Number of MAGs") + 
   xlab("Class") +
   coord_flip()
-#  theme(axis.text.x = element_text(angle = 90)) 
 ```
 
 
+### xyplot of MAG size for each class with metagenome data set
 ```{r}
-all_metabat_virsorter_50_10 %>% 
-ggplot(aes(x = reorder(Class, BinContigLenSum, na.rm = TRUE), y = BinContigLenSum, color = Domain)) + 
-  geom_point() +
-  ggtitle("Genome size of MAGs for each Class") +
-  ylab("Genome size") + 
-  xlab("Class") +
-  coord_flip() +
-  theme(text = element_text(size = 20, color="black"))
-#  theme(axis.text.x = element_text(angle = 90)) 
-```
-
-## Histogram
-
-```{r}
-all_metabat_virsorter_50_10 %>% 
-ggplot(aes(x = BinContigLenSum)) + 
-  geom_histogram(colour = "black", fill = "maroon", binwidth=500000) +
-  ggtitle("Genome size of MAGs for each Class") +
-  ylab("Genome size") + 
-  theme(text = element_text(size = 20, color="black"))
-#  theme(axis.text.x = element_text(angle = 90)) 
-```
-
-ggplot(df, aes(x=weight, color=sex)) +
-  geom_histogram(fill="white")
-  
-  
-```{r}
-all_metabat_virsorter_50_10 %>% 
-ggplot(aes(x = reorder(Class, BinContigLenSum, na.rm = TRUE), y = BinContigLenSum, color = Pore)) + 
-  geom_point() +
-  ggtitle("Genome size of MAGs for each Class") +
-  ylab("Number of MAGs") + 
-  xlab("Class") +
-  coord_flip()
-#  theme(axis.text.x = element_text(angle = 90)) 
-```
-
-```{r}
-all_metabat_virsorter_50_10 %>% 
+all_metabat_bin_size_50_10 %>% 
 ggplot(aes(x = reorder(Class, BinContigLenSum, na.rm = TRUE), y = BinContigLenSum, color = Metagenome)) + 
   geom_point() +
   ggtitle("Genome size of MAGs for each Class") +
   ylab("Number of MAGs") + 
   xlab("Class") +
   coord_flip()
-#  theme(axis.text.x = element_text(angle = 90)) 
-```
-
-
-```{r}
-all_metabat_virsorter_50_10 %>% 
-ggplot(aes(x = reorder(Phylum, BinContigLenSum, na.rm = TRUE), y = BinContigLenSum, color = Domain)) + 
-  geom_point() +
-  ggtitle("Number of MAGs for each Phylum") +
-  ylab("Number of MAGs") + 
-  xlab("Phylum") +
-  coord_flip()
-#  theme(axis.text.x = element_text(angle = 90)) 
-```
-
-
-
-```{r}
-all_metabat_virsorter_50_10 %>% 
-ggplot(aes(x = reorder(Order, BinContigLenSum, na.rm = TRUE), y = BinContigLenSum, color = Domain)) + 
-  geom_point() +
-  ggtitle("Number of MAGs for each Order") +
-  ylab("Number of MAGs") + 
-  xlab("Order") +
-  coord_flip()
-#  theme(axis.text.x = element_text(angle = 90)) 
-```
-
-
-```{r}
-write_tsv(all_metabat_virsorter, "all_metabat_virsorter.tsv")
-write_tsv(all_metabat_virsorter_50_10, "all_metabat_virsorter_50_10")
-```
-
-# Phages
-
-```{r}
-all_metabat_virsorter_phage <- all_metabat_virsorter %>% 
-  filter(bin_high_group == "dsDNAphage")
-```
-
-
-```{r}
-all_metabat_virsorter_phage %>% 
-ggplot(aes(x = bin_high_group, y = BinContigLenSum)) + 
-  geom_point(colour = "maroon", fill = "maroon") +
-  geom_jitter(colour = "maroon", fill = "maroon") +
-  ggtitle("Genome size of dsDNA phage MAGs") +
-  ylab("Number of MAGs") + 
-  xlab("dsDNA phage MAGs") +
-  coord_flip()
-#  theme(axis.text.x = element_text(angle = 90)) 
-```
-
-
-
-```{r}
-all_metabat_virsorter_phage %>% 
-ggplot(aes(x = bin_high_group, y = BinContigLenSum)) + 
-  geom_jitter(colour = "maroon", fill = "maroon") +
-  ggtitle("Genome size of dsDNA phage MAGs") +
-  ylab("Genome size") + 
-  xlab("dsDNA phage MAGs") +
-  theme(text = element_text(size = 20, color="black")) +
-  coord_flip()
-#  theme(axis.text.x = element_text(angle = 90)) 
-```
-
-```{r}
-all_metabat_virsorter_phage %>% 
-ggplot(aes(x = bin_high_group, y = BinContigLenSum)) + 
-  geom_point() +
-  coord_flip()
-#  theme(axis.text.x = element_text(angle = 90)) 
 ```
 

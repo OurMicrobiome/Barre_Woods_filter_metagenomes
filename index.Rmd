@@ -1,0 +1,12 @@
+---
+title: "Barre Woods Filter Metagenomes"
+output: html_document
+date: '2022'
+---
+
+This is a rendering of hmtl files from the repository (https://github.com/OurMicrobiome/filter_metagenomes) from the research lab of Prof. Jeffrey Blanchard. 
+
+## Pages
+
+* Page 1 : [Initial Analyses](merge_checkM_gtdb_metabat_genome.hmtl)
+

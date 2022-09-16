@@ -256,7 +256,7 @@ write_tsv(all_metabat_bin_size, "all_metabat_bin_size.tsv")
 all_metabat_bin_size_50_10 <- all_metabat_bin_size %>%
   filter(Completeness > 49.5) %>% 
   filter(Contamination < 10.4) 
-  write_tsv(all_metabat_bin_size_50_10, "all_metabat_bin_size_50_10")
+  write_tsv(all_metabat_bin_size_50_10, "all_metabat_bin_size_50_10.tsv")
 
 datatable(all_metabat_bin_size_50_10 %>% 
   group_by(Phylum) %>% 
@@ -272,7 +272,7 @@ datatable(all_metabat_bin_size_50_10 %>%
 all_metabat_bin_size_90_10 <- all_metabat_bin_size %>%
   filter(Completeness > 89.5) %>% 
   filter(Contamination < 10.4) 
-  write_tsv(all_metabat_bin_size_90_10, "all_metabat_bin_size_90_10")
+  write_tsv(all_metabat_bin_size_90_10, "all_metabat_bin_size_90_10.tsv")
 
 datatable(all_metabat_bin_size_90_10 %>% 
   group_by(Phylum) %>% 

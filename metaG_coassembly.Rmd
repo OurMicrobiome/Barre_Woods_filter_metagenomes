@@ -1,0 +1,106 @@
+---
+title: "metaG coassembly"
+author: "Jeffrey Blanchard"
+date: "2022-08-09"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+library(DT)
+```
+
+
+```{r}
+metaG_coassembly <- read_csv("metaG_coassembly_img.csv")
+# out taxa categories in separate columns
+# change bin names in gtdb to remove .fa
+# IMG only reports to the species level
+metaG_coassembly <- metaG_coassembly %>% 
+  rename(`Completeness` = `Bin Completeness`) %>% 
+  rename(`Contamination` = `Bin Contamination`) %>% 
+  mutate_at("GTDBTK Lineage", str_replace, "d__", "") %>% 
+  mutate_at("GTDBTK Lineage", str_replace, "p__", "") %>% 
+  mutate_at("GTDBTK Lineage", str_replace, "c__", "") %>% 
+  mutate_at("GTDBTK Lineage", str_replace, "o__", "") %>% 
+  mutate_at("GTDBTK Lineage", str_replace, "f__", "") %>% 
+  mutate_at("GTDBTK Lineage", str_replace, "g__", "") %>% 
+#  mutate_at("GTDBTK Lineage", str_replace, "s__", "") %>% 
+  separate(`GTDBTK Lineage`, c("Domain", "Phylum", "Class", "Order", "Family", "Genus"), ";")
+```
+```{r}
+write_tsv(metaG_coassembly, "metaG_coassembly_all_metabat.tsv")
+```
+
+### Tables
+
+```{r}
+metaG_coassembly_50_10 <- metaG_coassembly %>%
+  filter(Completeness > 50) %>% 
+  filter(Contamination < 10) 
+
+datatable(metaG_coassembly_50_10 %>% 
+  group_by(Phylum) %>% 
+  summarise(n = n()) %>%
+  mutate(freq = 100 * n / sum(n)) %>% 
+  mutate_if(is.numeric, round, 1)  
+)
+```
+
+
+```{r}
+metaG_coassembly_90_5 <- metaG_coassembly %>%
+  filter(Completeness > 90) %>% 
+  filter(Contamination < 5) 
+
+datatable(metaG_coassembly_90_5 %>% 
+  group_by(Phylum) %>% 
+  summarise(n = n()) %>%
+  mutate(freq = 100 * n / sum(n)) %>% 
+  mutate_if(is.numeric, round, 1)  
+)
+```
+
+## Graphs
+
+#### Phyla bar chart
+
+
+```{r, echo=FALSE}
+metaG_coassembly_50_10 %>% 
+  count(Phylum, sort = TRUE) %>% 
+  ggplot(aes(x=reorder(Phylum, n), y = n)) +
+  geom_col(colour = "maroon", fill = "maroon") +
+  coord_flip()+
+  ggtitle("Number of MAGs for each Phylum at MQ") +
+  ylab("Number of MAGs") + 
+  xlab("Class")
+```
+```{r, echo=FALSE}
+metaG_coassembly_90_5 %>% 
+  count(Phylum, sort = TRUE) %>% 
+  ggplot(aes(x=reorder(Phylum, n), y = n)) +
+  geom_col(colour = "maroon", fill = "maroon") +
+  coord_flip()+
+  ggtitle("Number of MAGs for each Phylum at HQ") +
+  ylab("Number of MAGs") + 
+  xlab("Class")
+```
+
+
+
+## Histogram
+
+```{r}
+metaG_coassembly_50_10 %>% 
+ggplot(aes(x = `Total Number of Bases`)) + 
+  geom_histogram(colour = "black", fill = "maroon", binwidth=500000) +
+  ggtitle("Genome size of MQ MAGs") +
+  ylab("Genome size") + 
+  theme(text = element_text(size = 20, color="black"))
+#  theme(axis.text.x = element_text(angle = 90)) 
+```

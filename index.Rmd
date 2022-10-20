@@ -8,5 +8,6 @@ This is a rendering of hmtl files from the repository (https://github.com/OurMic
 
 ## Pages
 
-* Page 1 : [Initial Analyses](KBase_bacteria/merge_checkM_gtdb_metabat_genome.html)
+* Page 1 : [0.2 & 1.2 um filter Metagenomes](KBase_bacteria/merge_checkM_gtdb_metabat_genome.html)
+* Page 1 : [Complete soil metagenomes - Coassembly of 28 samples](metaG_coassembly.html)
 

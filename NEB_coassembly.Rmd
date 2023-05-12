@@ -1,0 +1,95 @@
+---
+title: "Analysis of Coassembly from the Barre Woods Filter Metagenomes"
+author: "Jeffrey Blanchard"
+date: "3/26/2023"
+output:
+  html_document:
+    toc: true
+    toc_depth: 4
+    theme: united
+    highlight: tango
+---
+
+# This report is an analysis of the Barre Woods filter metagenomes. Assembly, binning, quality control and classification was done on KBase
+(https://narrative.kbase.us/narrative/105147). The CheckM and GTDB files were downloaded to this project folder. 
+
+## Load Libraries
+
+```{r, warning=FALSE}
+# Load libraries
+library(tidyverse)
+library(DT)
+```
+
+
+```{r}
+# Read and tidy gtdbtk results
+checkm_gtdb_2.5k <- read_tsv("NEB_coassembly/checkm_gtdb_NEB_coassembly_2.5k.tsv") %>% 
+  rename(`GTDBTK Lineage` = `classification`) %>% 
+  mutate_at("GTDBTK Lineage", str_replace, "d__", "") %>% 
+  mutate_at("GTDBTK Lineage", str_replace, "p__", "") %>% 
+  mutate_at("GTDBTK Lineage", str_replace, "c__", "") %>% 
+  mutate_at("GTDBTK Lineage", str_replace, "o__", "") %>% 
+  mutate_at("GTDBTK Lineage", str_replace, "f__", "") %>% 
+  mutate_at("GTDBTK Lineage", str_replace, "g__", "") %>% 
+  mutate_at("GTDBTK Lineage", str_replace, "s__", "") %>% 
+  separate(`GTDBTK Lineage`, c("Domain", "Phylum", "Class", "Order", "Family", "Genus", "Species"), ";") %>% 
+  mutate(min_contig_length = "2.5k")
+```
+
+
+```{r}
+# Read and tidy gtdbtk results
+checkm_gtdb_10k <- read_tsv("NEB_coassembly/checkm_gtdb_NEB_coassembly_10k.tsv") %>% 
+  rename(`GTDBTK Lineage` = `classification`) %>% 
+  mutate_at("GTDBTK Lineage", str_replace, "d__", "") %>% 
+  mutate_at("GTDBTK Lineage", str_replace, "p__", "") %>% 
+  mutate_at("GTDBTK Lineage", str_replace, "c__", "") %>% 
+  mutate_at("GTDBTK Lineage", str_replace, "o__", "") %>% 
+  mutate_at("GTDBTK Lineage", str_replace, "f__", "") %>% 
+  mutate_at("GTDBTK Lineage", str_replace, "g__", "") %>% 
+  mutate_at("GTDBTK Lineage", str_replace, "s__", "") %>% 
+  separate(`GTDBTK Lineage`, c("Domain", "Phylum", "Class", "Order", "Family", "Genus", "Species"), ";") %>% 
+  mutate(min_contig_length = "10k")
+```
+
+
+```{r}
+checkm_gtdb_2.5k_10k <- bind_rows(checkm_gtdb_2.5k, checkm_gtdb_10k)
+```
+
+
+
+
+### Tables
+
+```{r}
+checkm_gtdb_50_10 <- checkm_gtdb_2.5k_10k %>%
+  filter(Completeness > 50) %>% 
+  filter(Contamination < 10) 
+
+datatable(checkm_gtdb_50_10 %>% 
+  group_by(min_contig_length, Phylum) %>% 
+  summarise(n = n()) %>%
+  mutate(freq = 100 * n / sum(n)) %>% 
+  mutate_if(is.numeric, round, 1)  
+)
+```
+
+```{r}
+write_tsv(checkm_gtdb_50_10, "NEB_coassembly/checkm_gtdb_50_10_NEB_coassembly.tsv") 
+```
+
+
+```{r}
+checkm_gtdb_90_5 <- checkm_gtdb_2.5k_10k %>%
+  filter(Completeness > 90) %>% 
+  filter(Contamination < 5) 
+
+datatable(checkm_gtdb_90_5 %>% 
+  group_by(min_contig_length, Phylum) %>% 
+  summarise(n = n()) %>%
+  mutate(freq = 100 * n / sum(n)) %>% 
+  mutate_if(is.numeric, round, 1)  
+)
+```

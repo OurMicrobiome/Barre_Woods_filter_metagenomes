@@ -40,8 +40,8 @@ write_tsv(metaG_coassembly, "metaG_coassembly_all_metabat.tsv")
 
 ```{r}
 metaG_coassembly_50_10 <- metaG_coassembly %>%
-  filter(Completeness > 50) %>% 
-  filter(Contamination < 10) 
+  filter(Completeness >= 50) %>% 
+  filter(Contamination <= 10) 
 
 datatable(metaG_coassembly_50_10 %>% 
   group_by(Phylum) %>% 

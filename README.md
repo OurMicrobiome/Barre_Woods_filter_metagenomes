@@ -1,1 +1,1 @@
-# Analysis of size selected bacteria from the Barre Woods experimental warming plot
+# Analysis of size selected bacteria from the NEB filter metagenome project
